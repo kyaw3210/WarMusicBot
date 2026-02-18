@@ -1,45 +1,22 @@
-
-
-from __future__ import unicode_literals
-
-import asyncio
-import math
 import os
-import time
-from random import randint
-from urllib.parse import urlparse
-
-import aiofiles
-import aiohttp
-import requests
-import wget
 import yt_dlp
+import requests
 from pyrogram import Client, filters
-from pyrogram.errors import FloodWait, MessageNotModified
 from pyrogram.types import Message
 from youtube_search import YoutubeSearch
-from yt_dlp import YoutubeDL
-
 from config import BOT_USERNAME as bn
-from driver.decorators import humanbytes
-from driver.filters import command, other_filters
+from driver.filters import command
 
-
-ydl_opts = {
-    'format': 'best',
-    'keepvideo': True,
-    'prefer_ffmpeg': False,
-    'geo_bypass': True,
-    'outtmpl': '%(title)s.%(ext)s',
-    'quite': True
-}
-
-
-@Client.on_message(command(["song", f"song@{bn}"])) 
-async def song(_, message):
+# Song Download Function
+@Client.on_message(command(["song", f"song@{bn}"]))
+async def song_download(client, message):
     query = " ".join(message.command[1:])
-    m = wait message.reply("🔎 finding song...")
+    if not query:
+        return await message.reply("🎧 Please give a song name!")
+    
+    m = await message.reply("🔎 finding song...")
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
+    
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
@@ -49,102 +26,81 @@ async def song(_, message):
         thumb = requests.get(thumbnail, allow_redirects=True)
         open(thumb_name, "wb").write(thumb.content)
         duration = results[0]["duration"]
-
     except Exception as e:
-    await m.edit("❌ song not found.\n\nplease give a valid song name.")
+        await m.edit("❌ song not found...")
         print(str(e))
         return
+
     await m.edit("📥 downloading file...")
     try:
         with yt_dlp.YoutubeDL(ydl_ops) as ydl:
             info_dict = ydl.extract_info(link, download=False)
             audio_file = ydl.prepare_filename(info_dict)
             ydl.process_info(info_dict)
-            rep = f"**🎧 Uploader @{bn}**"
-        secmul, dur, dur_arr = 1, 0, duration.split(":")
-        for i in range(len(dur_arr) - 1, -1, -1):
-            dur += int(float(dur_arr[i])) * secmul
-            secmul *= 60
-  
-     await m.edit("📤 uploading file...")
-     await message.reply_audio(
+        
+        rep = f"**🎧 Uploader @{bn}**"
+        await m.edit("📤 uploading file...")
+        await message.reply_audio(
             audio_file,
             caption=rep,
             thumb=thumb_name,
-            parse_mode="md",
-            title=title,
-            duration=dur,
+            duration=int(duration.split(':')[0])*60 + int(duration.split(':')[1]) if ':' in duration else 0
         )
+        await m.delete()
+    except Exception as e:
+        await m.edit("❌ error, wait for bot owner to fix")
+        print(str(e))
     
-    await   m.delete()
-    except Exception as e:
-    await   m.edit("❌ error, wait for bot owner to fix")
-    print(e)
-
     try:
-        os.remove(audio_file)
-        os.remove(thumb_name)
-    except Exception as e:
-        print(e)
+        if os.path.exists(audio_file):
+            os.remove(audio_file)
+        if os.path.exists(thumb_name):
+            os.remove(thumb_name)
+    except Exception:
+        pass
 
+# Video Download Function
 @Client.on_message(command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]))
-async ef vsong(client, message):
-    ydl_opts = {
-        "format": "best",
-        "keepvideo": True,
-        "prefer_ffmpeg": False,
-        "geo_bypass": True,
-        "outtmpl": "%(title)s.%(ext)s",
-        "quite": True,
-    }
+async def vsong(client, message):
     query = " ".join(message.command[1:])
+    if not query:
+        return await message.reply("🎥 Please give a video name!")
+
+    m = await message.reply("🔎 finding video...")
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
         link = f"https://youtube.com{results[0]['url_suffix']}"
         title = results[0]["title"][:40]
-        thumbnail = results[0]["thumbnails"][0]
         thumb_name = f"{title}.jpg"
+        thumbnail = results[0]["thumbnails"][0]
         thumb = requests.get(thumbnail, allow_redirects=True)
         open(thumb_name, "wb").write(thumb.content)
-        results[0]["duration"]
-        results[0]["url_suffix"]
-        results[0]["views"]
-        
     except Exception as e:
-        print(e)
-    try:
-    msg = await message.reply("📥 **downloading video...**")
-    with YoutubeDL(ydl_opts) as ytdl:
-    ytdl_data = ytdl.extract_info(link, download=True)
-    file_name = ytdl.prepare_filename(ytdl_data)
-    except Exception as e:
-    return await msg.edit(f"🚫 **error:** {e}")
-    preview = wget.download(thumbnail)
-    await msg.edit("📤 **uploading video...**")
-    await message.reply_video(
-    file_name,
-    duration=int(ytdl_data["duration"]),
-    thumb=preview,
-    caption=title
-    try:
-    os.remove(file_name)
-    await msg.delete()
-    except Exception as e:
-    print(e)
+        await m.edit("❌ video not found...")
+        return
 
-
-@Client.on_message(command(["lyric", f"lyric@{bn}"]))
-async def lyrics(_, message):
+    await m.edit("📥 downloading video...")
     try:
-        if len(message.command) < 2:
-            await message.reply_text("» **give a lyric name too.**")
-            return
-        query = message.text.split(None, 1)[1]
-        rep = await message.reply_text("🔎 **searching lyrics...**")
-        resp = requests.get(
-            f"https://api-tede.herokuapp.com/api/lirik?l={query}"
-        ).json()
-        result = f"{resp['data']}"
-        await rep.edit(result)
+        ydl_opts = {"format": "best"}
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(link, download=True)
+            video_file = ydl.prepare_filename(info_dict)
+
+        await m.edit("📤 uploading video...")
+        await message.reply_video(
+            video_file,
+            caption=f"🎥 **{title}**\n\n**Uploader @{bn}**",
+            thumb=thumb_name
+        )
+        await m.delete()
+    except Exception as e:
+        await m.edit(f"❌ error: {str(e)}")
+
+    try:
+        if os.path.exists(video_file):
+            os.remove(video_file)
+        if os.path.exists(thumb_name):
+            os.remove(thumb_name)
     except Exception:
-        await rep.edit("❌ **results of lyric not found.**\n\n» **please give a valid song name.**")
+      
+        pass
