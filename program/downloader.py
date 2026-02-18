@@ -88,7 +88,7 @@ async def song(_, message):
         print(e)
 
 @Client.on_message(command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]))
-asyncef vsong(client, message):
+async ef vsong(client, message):
     ydl_opts = {
         "format": "best",
         "keepvideo": True,
