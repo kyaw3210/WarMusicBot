@@ -51,7 +51,7 @@ async def song(_, message):
         duration = results[0]["duration"]
 
     except Exception as e:
-        m.edit("❌ song not found.\n\nplease give a valid song name.")
+     await m.edit("❌ song not found.\n\nplease give a valid song name.")
         print(str(e))
         return
     m.edit("📥 downloading file...")
