@@ -56,6 +56,7 @@ async def song_download(client, message):
             os.remove(audio_file)
         if os.path.exists(thumb_name):
             os.remove(thumb_name)
+    
     except Exception:
         pass
 
