@@ -9,7 +9,7 @@ import time
 from random import randint
 from urllib.parse import urlparse
 
-import aiofiles
+import Message
 import aiohttp
 import requests
 import wget
@@ -35,7 +35,7 @@ ydl_opts = {
 }
 
 
-@Client.on_message(command(["song", f"song@{bn}"]) & ~filters.edited)
+@Client.on_message(command(["song", f"song@{bn}"])
 def song(_, message):
     query = " ".join(message.command[1:])
     m = message.reply("🔎 finding song...")
