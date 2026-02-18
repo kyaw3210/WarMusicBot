@@ -75,9 +75,10 @@ async def song(_, message):
             title=title,
             duration=dur,
         )
-        m.delete()
+    
+    await   m.delete()
     except Exception as e:
-        m.edit("❌ error, wait for bot owner to fix")
+    await   m.edit("❌ error, wait for bot owner to fix")
         print(e)
 
     try:
