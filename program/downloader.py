@@ -125,8 +125,7 @@ async ef vsong(client, message):
     file_name,
     duration=int(ytdl_data["duration"]),
     thumb=preview,
-    caption=ytdl_data["title"],
-    )
+    caption=title
     try:
     os.remove(file_name)
     await msg.delete()
