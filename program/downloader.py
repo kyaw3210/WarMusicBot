@@ -36,7 +36,7 @@ ydl_opts = {
 
 
 @Client.on_message(command(["song", f"song@{bn}"]) 
-def song(_, message):
+asyne def song(_, message):
     query = " ".join(message.command[1:])
     m = message.reply("🔎 finding song...")
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
