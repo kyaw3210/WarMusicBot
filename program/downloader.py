@@ -77,9 +77,7 @@ m.edit("❌ error, wait for bot owner to fix")
     except Exception as e:
         print(e)
 
-
-@Client.on_message(
-    command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]))
+@Client.on_message(command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]))
 async def vsong(client, message):
     ydl_opts = {
         "format": "best",
