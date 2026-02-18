@@ -113,25 +113,25 @@ async ef vsong(client, message):
     except Exception as e:
         print(e)
     try:
-        msg = await message.reply("📥 **downloading video...**")
-        with YoutubeDL(ydl_opts) as ytdl:
-            ytdl_data = ytdl.extract_info(link, download=True)
-            file_name = ytdl.prepare_filename(ytdl_data)
+    msg = await message.reply("📥 **downloading video...**")
+    with YoutubeDL(ydl_opts) as ytdl:
+    ytdl_data = ytdl.extract_info(link, download=True)
+    file_name = ytdl.prepare_filename(ytdl_data)
     except Exception as e:
-        return await msg.edit(f"🚫 **error:** {e}")
+    return await msg.edit(f"🚫 **error:** {e}")
     preview = wget.download(thumbnail)
     await msg.edit("📤 **uploading video...**")
     await message.reply_video(
-        file_name,
-        duration=int(ytdl_data["duration"]),
-        thumb=preview,
-        caption=ytdl_data["title"],
+    file_name,
+    duration=int(ytdl_data["duration"]),
+    thumb=preview,
+    caption=ytdl_data["title"],
     )
     try:
-        os.remove(file_name)
-        await msg.delete()
+    os.remove(file_name)
+    await msg.delete()
     except Exception as e:
-        print(e)
+    print(e)
 
 
 @Client.on_message(command(["lyric", f"lyric@{bn}"]))
