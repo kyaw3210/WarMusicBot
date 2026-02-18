@@ -79,7 +79,7 @@ async def song(_, message):
     await   m.delete()
     except Exception as e:
     await   m.edit("❌ error, wait for bot owner to fix")
-        print(e)
+    print(e)
 
     try:
         os.remove(audio_file)
