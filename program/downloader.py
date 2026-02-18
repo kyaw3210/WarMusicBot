@@ -109,7 +109,7 @@ async ef vsong(client, message):
         results[0]["duration"]
         results[0]["url_suffix"]
         results[0]["views"]
-        message.from_user.mention
+        
     except Exception as e:
         print(e)
     try:
