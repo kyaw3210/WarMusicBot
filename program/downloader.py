@@ -87,9 +87,8 @@ async def song(_, message):
     except Exception as e:
         print(e)
 
-```python @Client.on_message@Client.on_message(command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]))
-@Client.on_message(
-    command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]) 
+
+@Client.on_message(command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]) 
     
 async def vsong(client, message):
     ydl_opts = {
