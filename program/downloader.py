@@ -35,7 +35,7 @@ ydl_opts = {
 }
 
 
-@Client.on_message(command(["song", f"song@{bn}"]) 
+@Client.on_message(command(["song", f"song@{bn}"])) 
 async def song(_, message):
     query = " ".join(message.command[1:])
     m = message.reply("🔎 finding song...")
