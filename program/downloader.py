@@ -65,9 +65,10 @@ async def song_download(client, message):
     info_dict = ydl.extract_info(link, download=False)
     audio_file = ydl.prepare_filename(info_dict)
     ydl.process_info(info_dict)
-({ mdelee()
-    except Exception as e:
-        m.edit("❌ error, wait for bot owner to fix")
+    await message.reply_audio(audio_file, caption=rep, thumb=thumb_name, duration=duration)
+    await m.delete()
+
+m.edit("❌ error, wait for bot owner to fix")
         print(e)
 
     try:
