@@ -35,7 +35,7 @@ ydl_opts = {
 }
 
 
-Client.on_message(command(["song", f"song@{bn}"])) 
+@Client.on_message(command(["song", f"song@{bn}"])) 
 async def song(_, message):
     query = " ".join(message.command[1:])
     m = wait message.reply("🔎 finding song...")
@@ -87,7 +87,7 @@ async def song(_, message):
     except Exception as e:
         print(e)
 
-Client.on_message(command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]))
+@Client.on_message(command(["vsong", f"vsong@{bn}", "video", f"video@{bn}"]))
 asyncef vsong(client, message):
     ydl_opts = {
         "format": "best",
@@ -134,7 +134,7 @@ asyncef vsong(client, message):
         print(e)
 
 
-Client.on_message(command(["lyric", f"lyric@{bn}"]))
+@Client.on_message(command(["lyric", f"lyric@{bn}"]))
 async def lyrics(_, message):
     try:
         if len(message.command) < 2:
