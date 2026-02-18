@@ -51,10 +51,10 @@ async def song(_, message):
         duration = results[0]["duration"]
 
     except Exception as e:
-     await m.edit("❌ song not found.\n\nplease give a valid song name.")
+    await m.edit("❌ song not found.\n\nplease give a valid song name.")
         print(str(e))
         return
-   await m.edit("📥 downloading file...")
+    await m.edit("📥 downloading file...")
     try:
         with yt_dlp.YoutubeDL(ydl_ops) as ydl:
             info_dict = ydl.extract_info(link, download=False)
